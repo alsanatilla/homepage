@@ -186,7 +186,7 @@ export default function Home() {
           </form>
           {formStatus === 'success' && (
             <div className="mt-4 p-4 bg-green-500 text-white border-4 border-black">
-              Thank you for your message! We'll get back to you soon.
+              Thank you for your message! We will get back to you soon.
             </div>
           )}
           {formStatus === 'error' && (

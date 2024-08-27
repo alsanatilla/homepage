@@ -1,28 +1,47 @@
-'use server'
+"use server";
 
-import { z } from 'zod'
+import { z } from "zod";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
-  message: z.string().min(1, 'Message is required'),
-})
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(1, "Message is required"),
+});
 
 export async function submitForm(formData: FormData) {
   const validatedFields = formSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    message: formData.get('message'),
-  })
+    name: formData.get("name"),
+    email: formData.get("email"),
+    message: formData.get("message"),
+  });
 
   if (!validatedFields.success) {
-    throw new Error('Invalid form data')
+    return { success: false, error: "Invalid form data" };
   }
 
-  // Here you would typically send an email or save to a database
-  // For this example, we'll just simulate a delay
-  await new Promise(resolve => setTimeout(resolve, 1000))
+  const { name, email, message } = validatedFields.data;
 
-  // If everything is successful, this function will resolve
-  // If there's an error, it will throw, and the client will catch it
+  try {
+    const data = await resend.emails.send({
+      from: "Your Website <onboarding@resend.dev>",
+      to: ["alsan.atilla@icloud.com"],
+      subject: "New Contact Form Submission",
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong> ${message}</p>
+      `,
+    });
+
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "An error occurred",
+    };
+  }
 }

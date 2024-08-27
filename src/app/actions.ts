@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { Resend } from "resend";
+import { EmailTemplate } from "@/components/ui/email";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -29,12 +30,7 @@ export async function submitForm(formData: FormData) {
       from: "Your Website <onboarding@resend.dev>",
       to: ["alsan.atilla@icloud.com"],
       subject: "New Contact Form Submission",
-      html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong> ${message}</p>
-      `,
+      react: EmailTemplate({ name, email, message }),
     });
 
     return { success: true, data };

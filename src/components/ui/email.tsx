@@ -58,7 +58,8 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
               marginBottom: "15px",
             }}
           >
-            You've received a new message from your website&apos;s contact form:
+            You&apos;ve received a new message from your website&apos;s contact
+            form:
           </p>
           <table
             cellPadding="0"
